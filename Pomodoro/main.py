@@ -80,7 +80,7 @@ title = tkinter.Label(text="Timer", bg=YELLOW, fg=GREEN, font=(FONT_NAME, 34, "b
 title.grid(column=1, row=0)
 
 # IMAGE AND COUNTER
-pomodoro_img = tkinter.PhotoImage(file="tomato.png")
+pomodoro_img = tkinter.PhotoImage(file="./images/tomato.png")
 canvas = tkinter.Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
 canvas.create_image(100, 112, image=pomodoro_img)
 timer_txt = canvas.create_text(104, 134, text="00:00", fill="white", font=(FONT_NAME, 28, "bold"))
