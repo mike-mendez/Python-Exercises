@@ -1,10 +1,26 @@
-from os.path import exists
-from pandas import concat, DataFrame, read_csv
+import json
 from pyperclip import copy
 from random import choice, randint, shuffle
 from string import ascii_lowercase, ascii_uppercase, digits, punctuation
 from tkinter import *
 from tkinter import messagebox
+
+
+# ---------------------------- SEARCH DATA -------------------------------------- #
+def search_data():
+    try:
+        with open("data.json", "r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError as error_msg:
+        messagebox.showerror(title="File Not Found", message=f"{error_msg}")
+    else:
+        website = website_entry.get()
+        if website in data:
+            email_user = data[website]["Email/Username"]
+            password = data[website]["Password"]
+            messagebox.showinfo(title=website, message=f"Email/Username: {email_user}\nPassword: {password}")
+        else:
+            messagebox.showwarning(title="Not Found", message=f"No credentials exist for {website}")
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -34,32 +50,33 @@ def add_credentials():
         # ALERT FOR WHEN FIELDS ARE EMPTY
         messagebox.showwarning(title="OOPS", message="Please don't leave any fields empty!")
     else:
-        # GET NEW CREDENTIALS FROM USER AND ADD TO EXISTING DATA
-        credentials = {
-            website_label["text"]: [website],
-            email_user_label["text"]: [email_user],
-            password_label["text"]: [password],
-        }
         # CONFIRMATION MESSAGE
         confirm = messagebox.askokcancel(title=website, message=f"These are the details entered:\nEmail: {email_user}\n"
                                                                 f"Password: {password}\nIs it OK to save?")
         if confirm:
-            if exists("data.csv"):  # CHECKING TO SEE IF DATA EXISTS
-                old_data = read_csv("data.csv")
-                new_data = DataFrame(credentials)
-                # CONCAT NEW DATA TO EXISTING DATA
-                combined_df = concat([old_data, new_data], ignore_index=True)
-                combined_df.to_csv("data.csv", index=False)
+            # GET NEW CREDENTIALS FROM USER
+            credentials = {website: {
+                "Email/Username": email_user,
+                "Password": password
+            }
+            }
+            try:
+                with open("data.json", "r") as data_file:
+                    # READING OLD DATA
+                    data = json.load(data_file)
+            except FileNotFoundError:
+                # IF FILE DOES NOT EXIST, CREATE ONE
+                with open("data.json", "w") as data_file:
+                    json.dump(credentials, data_file, indent=4)
             else:
-                # PREPARE TO CREATE/WRITE TO NEW FILE
-                data = DataFrame(credentials)
-                data.to_csv("data.csv", index=False)
-
-            data = read_csv("data.csv")
-            print(data)
-            # CLEARING ENTRY FIELDS
-            website_entry.delete(0, END)
-            password_entry.delete(0, END)
+                # IF FILE DOES EXIST, UPDATE IT
+                data.update(credentials)
+                with open("data.json", "w") as data_file:
+                    json.dump(data, data_file, indent=4)
+            finally:
+                # CLEARING ENTRY FIELDS
+                website_entry.delete(0, END)
+                password_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -76,37 +93,41 @@ canvas.create_image(100, 100, image=logo)
 canvas.grid(column=0, columnspan=3, row=0)
 
 # WEBSITE LABEL
-website_label = Label(text="Website", font=("JetBrains Mono", 10, "bold"))
+website_label = Label(text="Website", font=("JetBrains Mono", 8, "bold"))
 website_label.grid(column=0, row=1)
 
 # WEBSITE ENTRY
 website_entry = Entry(relief="groove")
-website_entry.grid(column=1, columnspan=2, row=1, sticky="ew")
+website_entry.grid(column=1, row=1, sticky="e", padx=(0, 10))
 website_entry.focus()
 
+# SEARCH
+search_button = Button(text="Search", font=("JetBrains Mono", 8, "bold"), command=search_data)
+search_button.grid(column=2, row=1, sticky="we")
+
 # EMAIL/USERNAME LABEL
-email_user_label = Label(text="Email/Username", font=("JetBrains Mono", 10, "bold"))
+email_user_label = Label(text="Email/Username", font=("JetBrains Mono", 8, "bold"))
 email_user_label.grid(column=0, row=2)
 
 # EMAIL/USERNAME ENTRY
 email_user_entry = Entry(width=20, relief="groove")
-email_user_entry.grid(column=1, columnspan=2, row=2, sticky="ew")
+email_user_entry.grid(column=1, columnspan=2, row=2, sticky="ew", pady=10)
 email_user_entry.insert(0, "mikemendez@mail.com")
 
 # PASSWORD LABEL
-password_label = Label(text="Password", font=("JetBrains Mono", 10, "bold"))
+password_label = Label(text="Password", font=("JetBrains Mono", 8, "bold"))
 password_label.grid(column=0, row=3)
 
 # PASSWORD ENTRY
 password_entry = Entry(width=20, relief="groove")
-password_entry.grid(column=1, row=3, sticky="w")
+password_entry.grid(column=1, row=3, sticky="e", padx=(0, 10))
 
 # GENERATE PASSWORD BUTTON
-generate_pwd_button = Button(text="Generate Password", font=("JetBrains Mono", 10, "bold"), command=generate_pwd)
-generate_pwd_button.grid(column=2, row=3)
+generate_pwd_button = Button(text="Generate Password", font=("JetBrains Mono", 8, "bold"), command=generate_pwd)
+generate_pwd_button.grid(column=2, row=3, sticky="we", pady=10)
 
 # ADD BUTTON
-add_credentials_button = Button(text="Add", font=("JetBrains Mono", 10, "bold"), command=add_credentials)
+add_credentials_button = Button(text="Add", font=("JetBrains Mono", 8, "bold"), command=add_credentials)
 add_credentials_button.grid(column=1, columnspan=2, row=4, sticky="ew")
 
 window.mainloop()
