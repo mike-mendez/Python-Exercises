@@ -1,6 +1,6 @@
-import pandas
+from pandas import read_csv
 
-data = pandas.read_csv("./data/nato_phonetic_alphabet.csv")
+data = read_csv("./data/nato_phonetic_alphabet.csv")
 data_dict = {}
 for index, row in data.iterrows():
     data_dict[row.letter] = row.code

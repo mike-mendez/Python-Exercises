@@ -4,7 +4,7 @@ from pandas import DataFrame, read_csv
 
 # ----------------------------- CONSTANTS --------------------------------------- #
 BACKGROUND_COLOR = "#B1DDC6"
-LANGUAGE = "Spanish"
+LANGUAGE = "Korean"
 COUNTDOWN = 3000
 
 # --------------------------- LANGUAGE DATA ------------------------------------- #
