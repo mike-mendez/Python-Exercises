@@ -1,8 +1,8 @@
-import smtplib
+from smtplib import SMTP
 
 email = "sending_email@gmail.com"
 password = "password"
-with smtplib.SMTP("smtp.gmail.com") as connection:
+with SMTP("smtp.gmail.com") as connection:
     connection.starttls()  # Encrypts sent email if read by an interceptor
     connection.login(user=email, password=password)
     connection.sendmail(
