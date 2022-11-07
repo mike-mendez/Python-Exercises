@@ -36,8 +36,8 @@ class QuizInterface:
 
     def get_next_question(self):
         self.question_box.config(bg="white")
+        self.score_counter.config(text=f"Score: {self.quiz.score}")
         if self.quiz.still_has_questions():
-            self.score_counter.config(text=f"Score: {self.quiz.score}")
             q_txt = self.quiz.next_question()
             self.question_box.itemconfig(self.question_txt, text=q_txt)
         else:
