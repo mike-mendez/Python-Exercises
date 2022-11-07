@@ -8,7 +8,7 @@ API_KEY = "[YOUR_API_KEY]"  # FOR OMW
 CITY_TOWN = "[CITY]"
 COUNTRY_CODE = "[COUNTRY_CODE]"  # LOWERCASE; TWO LETTERS
 TEMP_UNIT = "[UNIT["
-TWILLIO_NUM = "[YOUR_TWILIO_NUMBER"
+TWILIO_NUM = "[YOUR_TWILIO_NUMBER]"
 RECEIVING_NUM = "[RECEIVING_NUMBER]"
 
 # ------------------------------- TWILIO DATA ---------------------------------- #
@@ -41,7 +41,7 @@ if will_rain:
     message = client.messages \
         .create(
         body="It's going to rain today. Remember to bring a umbrella ☂️",
-        from_=TWILLIO_NUM,
+        from_=TWILIO_NUM,
         to=RECEIVING_NUM,
     )
     print(message.status)
