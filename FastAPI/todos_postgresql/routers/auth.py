@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("..")
-
 from database import SessionLocal, engine
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status

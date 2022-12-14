@@ -1,12 +1,8 @@
-import sys
-
-sys.path.append("..")
-
 from database import engine, SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
 import models
 from pydantic import BaseModel, Field
-from .auth import get_current_user, get_user_exception
+from routers.auth import get_current_user, get_user_exception
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -134,7 +130,7 @@ async def delete_todo(todo_id: int,
     db.query(models.Todos).filter(models.Todos.id == todo_id).delete()
     db.commit()
 
-    return successful_response(201)
+    return successful_response(200)
 
 
 def successful_response(status_code: int):
